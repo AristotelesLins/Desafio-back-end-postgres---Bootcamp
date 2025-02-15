@@ -43,8 +43,17 @@ router.post('/tasks/:taskId/tags/:tagId', async (req, res) => {
 
     if (!task || !tag) return res.status(404).json({ error: 'Task or Tag not found' });
 
-    await task.addTag(tag);
+    await task.addTags([tag]); // Aqui está o erro corrigido!
     res.json({ message: 'Tag adicionada à tarefa' });
+});
+router.get('/tasks/filter/:tagName', async (req, res) => {
+    const tasks = await Task.findAll({
+        include: {
+            model: Tag,
+            where: { name: req.params.tagName }
+        }
+    });
+    res.json(tasks);
 });
 
 module.exports = router;
