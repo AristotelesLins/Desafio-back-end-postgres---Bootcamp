@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json()); // Já faz o papel do body-parser
+app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 
