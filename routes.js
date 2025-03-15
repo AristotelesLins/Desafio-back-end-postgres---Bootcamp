@@ -1,11 +1,16 @@
 const express = require('express');
 const { Task, Tag } = require('./models');
+const { User } = require('./models');
+const authMiddleware = require('./middleware/auth');
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 // Criar tarefa
 router.post('/tasks', async (req, res) => {
     const task = await Task.create(req.body);
+    userId: req.user.id // Associa a tarefa ao usuário autenticado
     res.json(task);
 });
 
