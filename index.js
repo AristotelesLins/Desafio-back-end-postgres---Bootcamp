@@ -1,3 +1,4 @@
+/*
 const express = require('express')
 const app = express()
 
@@ -20,10 +21,7 @@ app.get('/tasks', function (req, res) {
 app.post('/tasks', function (req, res){
     console.log(req.body)
     tasks.push(req.body)
-
-
-
- //res.send('Criando uma tarefa')
 })
 
 app.listen(3000)
+*/

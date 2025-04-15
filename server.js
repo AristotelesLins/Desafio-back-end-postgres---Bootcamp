@@ -1,22 +1,39 @@
 const express = require('express');
 const { sequelize } = require('./models');
-const routes = require('./routes');
 const authRoutes = require('./routes/auth');
+const routes = require('./routes');
+const cors = require('cors'); // Adicione esta linha
 
 require('dotenv').config();
 
 const app = express();
-app.use(express.json()); // Já faz o papel do body-parser
-app.use(routes);
+
+// Configurar CORS para permitir requisições do frontend
+app.use(cors({
+  origin: 'http://localhost:3001',
+}));
+
+app.use(express.json());
 
 app.use('/auth', authRoutes);
-app.use('/api', routes);
+app.use('/', routes);
 
 const PORT = process.env.PORT || 3000;
 
-sequelize.sync({ alter: true }).then(() => {
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  sequelize.authenticate().then(() => {
+    console.log('📌 Banco de dados conectado!');
+    app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+  }).catch(err => {
+    console.error('❌ Erro ao conectar ao banco de dados:', err);
+  });
+} else {
+  sequelize.sync({ alter: true }).then(() => {
     console.log('📌 Banco de dados sincronizado!');
     app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
-}).catch(err => {
+  }).catch(err => {
     console.error('❌ Erro ao conectar ao banco de dados:', err);
-});
+  });
+}
